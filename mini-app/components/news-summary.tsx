@@ -15,7 +15,7 @@ export default function NewsSummary() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchNews = async () => {
+  const fetchNews = async (): Promise<void> => {
     setLoading(true);
     setError(null);
     try {
@@ -23,15 +23,15 @@ export default function NewsSummary() {
         "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=false"
       );
       if (!res.ok) throw new Error("Network response was not ok");
-      const data = await res.json();
-      const mapped = data.map((item: any) => ({
+      const data: unknown[] = await res.json();
+      const mapped = data.map((item: unknown) => ({
         id: item.id,
         title: item.name,
         description: `Current price: $${item.current_price} (${item.market_cap_rank} market cap rank)`,
       }));
       setNews(mapped);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }
