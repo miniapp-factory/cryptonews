@@ -9,6 +9,12 @@ interface TokenNews {
   title: string;
   description: string;
 }
+interface CoinMarketData {
+  id: string;
+  name: string;
+  current_price: number;
+  market_cap_rank: number;
+}
 
 export default function NewsSummary() {
   const [news, setNews] = useState<TokenNews[]>([]);
@@ -23,8 +29,8 @@ export default function NewsSummary() {
         "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=false"
       );
       if (!res.ok) throw new Error("Network response was not ok");
-      const data: unknown[] = await res.json();
-      const mapped = data.map((item: unknown) => ({
+      const data: CoinMarketData[] = await res.json();
+      const mapped = data.map((item) => ({
         id: item.id,
         title: item.name,
         description: `Current price: $${item.current_price} (${item.market_cap_rank} market cap rank)`,
